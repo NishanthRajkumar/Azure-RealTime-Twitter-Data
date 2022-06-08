@@ -100,15 +100,15 @@ def get_live_tweets(name: str) -> str:
     if name in df_tweet_id['screen_name'].values:
         latest_streamed_tweet_id = str(df_tweet_id.loc[df_tweet_id['screen_name']==name]['tweet_id'].values[0])
     if latest_streamed_tweet_id!='' and latest_streamed_tweet_id!='nan':
-        public_tweets = api.user_timeline(screen_name=name, count=30, since_id=latest_streamed_tweet_id)
+        public_tweets = api.user_timeline(screen_name=name, count=30, since_id=latest_streamed_tweet_id, tweet_mode="extended")
     else:
-        public_tweets = api.user_timeline(screen_name=name, count=30)
+        public_tweets = api.user_timeline(screen_name=name, count=30, tweet_mode="extended")
 
     if len(public_tweets) != 0:
         columns = ['id_str', 'User', 'Tweet']
         data = []
         for tweet in public_tweets:
-            data.append([tweet.id_str, tweet.user.screen_name, tweet.text])
+            data.append([tweet.id_str, tweet.user.screen_name, tweet.full_text])
         pd.set_option('display.max_colwidth',300)
         df = pd.DataFrame(data, columns=columns, dtype=str)
 
